@@ -73,16 +73,34 @@ void handleKeyboard(unsigned char key, int x, int y) {
     glutPostRedisplay(); // Meminta layar di-refresh
 }
 
-// Fungsi untuk menggambar karpet piknik dengan warna merah muda solid
-void drawCarpet() {
-    glDisable(GL_LIGHTING); // Menonaktifkan pencahayaan untuk karpet
-    glColor3f(1.0f, 0.75f, 0.8f); // Warna merah muda
+// Fungsi untuk menggambar meja dengan 4 kaki
+void drawTable() {
+    // Bagian atas meja
+    glDisable(GL_LIGHTING); // Menonaktifkan pencahayaan untuk meja
+    glColor3f(0.6f, 0.4f, 0.2f); // Warna coklat kayu
     glPushMatrix();
-    glTranslatef(0.0f, -0.5f, 0.0f); // Memindahkan karpet sedikit ke bawah
-    glScalef(5.0f, 0.1f, 5.0f);  // Menyesuaikan ukuran karpet
-    glutSolidCube(1.0f);  // Menggambar kubus solid untuk karpet
+    glTranslatef(0.0f, -0.5f, 0.0f); // Memindahkan bagian atas meja
+    glScalef(5.0f, 0.2f, 5.0f);  // Menyesuaikan ukuran bagian atas meja
+    glutSolidCube(1.0f);  // Menggambar kubus solid untuk bagian atas meja
     glPopMatrix();
-    glEnable(GL_LIGHTING); // Mengaktifkan kembali pencahayaan untuk objek lainnya
+
+    // Kaki meja (4 buah)
+    glColor3f(0.5f, 0.3f, 0.1f); // Warna kaki meja lebih gelap
+    float legPositions[4][3] = {
+        {-2.2f, -1.5f, -2.2f}, // Kaki kiri belakang
+        {-2.2f, -1.5f,  2.2f}, // Kaki kiri depan
+        { 2.2f, -1.5f, -2.2f}, // Kaki kanan belakang
+        { 2.2f, -1.5f,  2.2f}  // Kaki kanan depan
+    };
+
+    for (int i = 0; i < 4; ++i) {
+        glPushMatrix();
+        glTranslatef(legPositions[i][0], legPositions[i][1], legPositions[i][2]); // Posisi kaki
+        glScalef(0.2f, 2.0f, 0.2f); // Ukuran kaki meja
+        glutSolidCube(1.0f);  // Menggambar kaki meja
+        glPopMatrix();
+    }
+    glEnable(GL_LIGHTING); // Aktifkan kembali pencahayaan untuk objek lainnya
 }
 
 // Fungsi untuk menggambar keranjang piknik (lebih pendek sedikit)
@@ -91,17 +109,17 @@ void drawBasket() {
 
     // Basis keranjang (diperkecil dan diposisikan)
     glPushMatrix();
-    glTranslatef(0.0f, 0.15f, 1.8f);  // Memindahkan keranjang agar tetap berada di atas karpet
+    glTranslatef(-1.0f, 0.15f, 1.5f);  // Memindahkan keranjang agar tetap berada di atas meja
     glScalef(2.0f, 0.8f, 1.2f);        // Mengurangi tinggi keranjang sedikit
     glutSolidCube(1.0f);  // Menggambar kubus solid untuk keranjang
     glPopMatrix();
 }
 
-// Fungsi untuk menggambar teko dan posisinya di ujung karpet
+// Fungsi untuk menggambar teko dan posisinya di ujung meja
 void drawTeapot() {
     glColor3f(0.2f, 0.6f, 0.8f); // Warna biru untuk teko
     glPushMatrix();
-    glTranslatef(1.8f, 0.0f, 1.8f);  // Memposisikan teko di ujung karpet
+    glTranslatef(1.5f, 0.0f, 1.5f);  // Memposisikan teko di ujung meja
     glutSolidTeapot(0.5);  // Menggambar teko dengan ukuran 0.5
     glPopMatrix();
 }
@@ -111,27 +129,27 @@ void drawFruits() {
     // Apel
     glColor3f(1.0f, 0.0f, 0.0f); // Warna merah untuk apel
     glPushMatrix();
-    glTranslatef(-1.0f, 0.0f, -1.0f);  // Memposisikan apel sedikit lebih jauh
+    glTranslatef(-1.0f, 0.0f, -1.5f);  // Memposisikan apel sedikit lebih jauh
     glutSolidSphere(0.2, 20, 20); // Menggambar bola padat untuk apel
     glPopMatrix();
 
     // Jeruk
     glColor3f(1.0f, 0.5f, 0.0f); // Warna oranye untuk jeruk
     glPushMatrix();
-    glTranslatef(1.0f, 0.0f, -1.0f);  // Memposisikan jeruk sedikit lebih jauh
+    glTranslatef(1.0f, 0.0f, -1.5f);  // Memposisikan jeruk sedikit lebih jauh
     glutSolidSphere(0.2, 20, 20); // Menggambar bola padat untuk jeruk
     glPopMatrix();
 
     // Anggur (diwakili oleh sekumpulan bola)
     glColor3f(0.6f, 0.0f, 0.6f); // Warna ungu untuk anggur
     glPushMatrix();
-    glTranslatef(0.0f, 0.0f, -1.0f);  // Posisi anggur sedikit lebih jauh
+    glTranslatef(0.0f, 0.0f, -1.5f);  // Posisi anggur sedikit lebih jauh
 
     // Membuat sekumpulan bola kecil untuk anggur
     for (float i = -0.1f; i <= 0.1f; i += 0.1f) {
         for (float j = -0.1f; j <= 0.1f; j += 0.1f) {
             glPushMatrix();
-            glTranslatef(i, 0.2f, j);  // Menentukan posisi bola-bola kecil
+            glTranslatef(i, 0.0f, j);  // Menentukan posisi bola-bola kecil
             glutSolidSphere(0.1, 10, 10); // Menggambar bola kecil untuk anggur
             glPopMatrix();
         }
@@ -139,7 +157,30 @@ void drawFruits() {
     glPopMatrix();
 }
 
-// Fungsi callback untuk menampilkan objek di layar
+// Fungsi untuk menggambar piring
+void drawPlate() {
+    glColor3f(0.9f, 0.9f, 0.9f); // Warna putih untuk piring
+    glPushMatrix();
+    glTranslatef(0.0f, -0.4f, -0.5f); // Posisi piring di atas meja
+    glScalef(1.5f, 0.1f, 1.5f); // Ukuran piring
+    glutSolidSphere(0.5, 30, 30); // Menggambar piring berbentuk lingkaran
+    glPopMatrix();
+}
+
+// Fungsi untuk menggambar gelas
+void drawGlass() {
+    GLUquadric* quad = gluNewQuadric(); // Membuat objek kuadrik untuk silinder
+    glColor3f(0.6f, 0.8f, 1.0f); // Warna biru muda untuk gelas
+
+    // Dinding gelas (silinder)
+    glPushMatrix();
+    glTranslatef(1.5f, -0.5f, 0.0f); // Posisikan silinder
+    glRotatef(-90.0f, 1.0f, 0.0f, 0.0f); // Rotasi agar silinder berdiri
+    gluCylinder(quad, 0.2f, 0.2f, 0.5f, 30, 10); // Gambar silinder untuk dinding gelas
+    glPopMatrix();
+
+    gluDeleteQuadric(quad); // Hapus objek kuadrik
+}
 
 // Fungsi callback untuk menampilkan objek di layar
 void display() {
@@ -150,10 +191,12 @@ void display() {
         0.0f, 1.0f, 0.0f);         // Vektor atas kamera
 
     // Menggambar objek
-    drawCarpet();
+    drawTable();
     drawBasket();
     drawTeapot();
     drawFruits();
+    drawPlate();
+    drawGlass();
 
     // Tampilkan koordinat kamera di layar
     glMatrixMode(GL_PROJECTION);
